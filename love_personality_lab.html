@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8eaf1">
+<title>恋爱人格实验室</title>
+<style>
+:root{--pink:#c66f9a;--deep:#70445d;--bg:#fff8fb;--muted:#927b89;--line:#f0dce6}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#fff8fb,#f4efff);font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#473543;min-height:100vh}
+.wrap{max-width:620px;margin:auto;padding:22px 16px 42px}.brand{text-align:center;color:#a15f81;font-size:12px;letter-spacing:3px;margin:12px 0}
+.panel{background:#fff;border:1px solid #f4e5ec;border-radius:24px;padding:24px;box-shadow:0 12px 35px #70445d10}
+h1{font-size:30px;line-height:1.25;text-align:center;color:#70445d;margin:8px 0 12px}
+h2{font-size:22px;color:#70445d;margin:8px 0 14px}.sub{text-align:center;color:var(--muted);line-height:1.7;font-size:14px}
+.hero{font-size:62px;text-align:center;margin:18px 0 8px}.pill{display:inline-block;background:#fbedf4;color:#a15f81;border-radius:99px;padding:7px 12px;font-size:12px}
+.btn{display:block;width:100%;border:0;border-radius:15px;background:var(--pink);color:white;font-weight:700;font-size:16px;padding:15px;margin-top:20px;cursor:pointer}
+.btn.secondary{background:#f8edf3;color:#925875}.btn:disabled{opacity:.45}
+.progress{height:7px;background:#f4e7ee;border-radius:99px;overflow:hidden;margin:16px 0 22px}.bar{height:100%;background:var(--pink);width:0;transition:width .2s}
+.qmeta{display:flex;justify-content:space-between;color:var(--muted);font-size:13px}
+.question{font-size:20px;line-height:1.55;font-weight:700;margin:18px 0}
+.option{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:15px;padding:15px;margin:12px 0;color:#594655;font-size:15px;line-height:1.6;cursor:pointer}
+.option.selected{border-color:var(--pink);background:#fff4f8;box-shadow:0 0 0 2px #c66f9a18}
+.note{font-size:12px;color:#a18b98;line-height:1.6;margin-top:18px}
+.resultIcon{font-size:64px;text-align:center;margin:10px}
+.resultName{text-align:center;color:#70445d;font-size:27px;font-weight:800;margin:8px}
+.resultDesc{text-align:center;color:#927b89;font-size:14px;line-height:1.7}
+.resultBlock{background:#fff7fa;border-radius:16px;padding:15px;margin-top:13px}
+.resultBlock b{display:block;color:#87546f;margin-bottom:6px}
+.footer{text-align:center;color:#ad9aa5;font-size:11px;margin:20px 0}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="brand">LOVE PERSONALITY LAB</div>
+ <section id="home" class="panel">
+  <div class="hero">💗</div>
+  <h1>恋爱人格实验室</h1>
+  <p class="sub">15道小问题，探索你在亲密关系中的表达方式、<br>安全感来源与冲突处理习惯。</p>
+  <div style="text-align:center;margin-top:18px"><span class="pill">免费测试 · 约3分钟</span></div>
+  <button class="btn" onclick="startQuiz()">开始测试</button>
+  <p class="note">温馨提示：本测试用于自我探索与娱乐，不是心理诊断，也不能替代专业建议。</p>
+ </section>
+ <section id="quiz" class="panel hidden">
+  <div class="qmeta"><span id="part">第一部分 · 爱的表达</span><span id="count">1 / 15</span></div>
+  <div class="progress"><div id="bar" class="bar"></div></div>
+  <div id="question" class="question"></div>
+  <button id="optA" class="option" onclick="choose('A')"></button>
+  <button id="optB" class="option" onclick="choose('B')"></button>
+  <button id="next" class="btn" onclick="nextQuestion()" disabled>下一题</button>
+  <button class="btn secondary" onclick="goHome()">退出测试</button>
+ </section>
+ <section id="result" class="panel hidden">
+  <div class="brand">YOUR LOVE PERSONALITY</div>
+  <div id="rIcon" class="resultIcon">💞</div>
+  <div id="rName" class="resultName"></div>
+  <div id="rTag" class="resultDesc"></div>
+  <div class="resultBlock"><b>你的爱情特点</b><span id="rDesc"></span></div>
+  <div class="resultBlock"><b>你的优势</b><span id="rStrength"></span></div>
+  <div class="resultBlock"><b>值得留意的地方</b><span id="rCare"></span></div>
+  <div class="resultBlock"><b>适合你的相处方式</b><span id="rPartner"></span></div>
+  <p class="note">结果是根据本次作答生成的倾向性描述，仅供自我探索与娱乐，不代表固定人格。</p>
+  <button class="btn" onclick="shareResult()">分享我的结果</button>
+  <button class="btn secondary" onclick="restart()">再测一次</button>
+ </section>
+ <div class="footer">恋爱人格实验室 · 探索自己，也理解彼此</div>
+</div>
+<script>
+const questions=[
+["当你喜欢上一个人时，你通常会？","主动找对方聊天，让对方感受到我的喜欢。","先观察对方，慢慢表达自己的心意。"],
+["喜欢的人生日，你会？","提前准备惊喜，希望给对方留下深刻印象。","认真挑选一份礼物，默默表达心意。"],
+["你最喜欢哪种恋爱感觉？","经常表达爱意，热烈又浪漫。","不需要太多语言，一个眼神就能懂彼此。"],
+["当你特别想念恋人时，你会？","直接告诉对方，想念就要表达出来。","默默关注对方，等合适的时机再联系。"],
+["你认为怎样才算真正爱一个人？","勇敢表达，让对方清楚知道自己有多爱。","把爱放在细节里，用行动慢慢证明。"],
+["恋人一天没有主动联系你，你会？","有点失落，希望对方主动关心自己。","不会太在意，相信对方可能只是忙。"],
+["你最希望恋人给你什么？","足够的陪伴、回应和关心。","足够的信任、理解和个人空间。"],
+["恋人要独自和朋友出去旅行，你会？","希望对方经常报平安，分享旅途情况。","完全尊重对方，开心就好。"],
+["当你心情不好时，你希望恋人？","陪在身边，及时安慰我。","给我一些空间，让我自己调整。"],
+["你觉得理想的爱情应该是？","两个人经常在一起，生活中彼此陪伴。","两个人各自独立，但心里始终有对方。"],
+["恋人误解了你，你会？","马上解释清楚，不希望误会持续。","先冷静一下，等双方情绪稳定再解释。"],
+["两个人吵架之后，你通常会？","主动找对方沟通，希望尽快解决问题。","先独自消化情绪，不想在气头上说话。"],
+["当你觉得恋人做得不够好时，你会？","直接告诉对方自己的想法。","先观察一段时间，再决定是否表达。"],
+["发生严重争执时，你更希望？","两个人坐下来，把问题说清楚。","暂时分开冷静，之后再处理。"],
+["如果一段感情出现问题，你会？","主动寻找原因，希望两个人一起修复。","先整理自己的感受，再决定下一步。"]
+];
+const types={
+"111":{name:"热烈守护型",icon:"💗",tag:"热情表达 · 重视陪伴 · 主动沟通",desc:"你倾向于直接表达喜欢，也希望在日常生活中有稳定的陪伴。遇到问题时，你通常愿意主动开启对话。",strength:"真诚、积极、有行动力，愿意为关系投入时间和心力。",care:"别把维系关系的责任都放在自己身上，也给彼此留出喘息空间。",partner:"愿意回应感情、重视陪伴，也能和你一起讨论问题的人。"},
+"011":{name:"温柔共鸣型",icon:"🌷",tag:"细腻表达 · 重视陪伴 · 主动沟通",desc:"你更习惯用细节表达感情，但内心很看重亲密与回应。你希望两个人能认真听懂彼此。",strength:"观察细致、体贴，愿意理解对方，也重视关系中的情感交流。",care:"不要总期待对方自动读懂你的暗示，重要需求可以温和说出来。",partner:"情绪稳定、愿意倾听，也会主动表达关心的人。"},
+"101":{name:"自由热恋型",icon:"✨",tag:"热情表达 · 信任空间 · 主动沟通",desc:"你喜欢把爱表达出来，同时也相信亲密关系不必时时黏在一起。你倾向于坦诚面对分歧。",strength:"热情而不失独立，愿意表达，也能尊重彼此的生活。",care:"表达需求时也留意对方的节奏，沟通不是争输赢。",partner:"真诚坦率、信任彼此，并拥有自己生活的人。"},
+"000":{name:"独立灵魂型",icon:"🌙",tag:"含蓄表达 · 信任空间 · 冷静消化",desc:"你更偏向含蓄表达，重视信任和个人空间。面对矛盾时，通常需要时间整理思绪。",strength:"独立、沉稳，尊重边界，不轻易被情绪推着走。",care:"冷静之后记得回到对话中，避免让沉默变成距离。",partner:"尊重边界、可靠守信，也愿意在需要时靠近你的人。"},
+"110":{name:"深情陪伴型",icon:"🫶",tag:"热情表达 · 重视陪伴 · 冷静消化",desc:"你愿意表达感情，也很看重稳定的陪伴。遇到冲突时，你可能先平复情绪，再认真面对。",strength:"投入、重感情，愿意通过持续行动经营关系。",care:"别因为害怕冲突而把感受一直压下去，合适时机要说出来。",partner:"稳定可靠、愿意陪伴，也能给双方冷静空间的人。"},
+"010":{name:"细水长流型",icon:"🍃",tag:"细腻表达 · 重视陪伴 · 冷静消化",desc:"你倾向于用细节表达爱，向往稳定陪伴。你需要一点时间处理情绪，再讨论关系中的问题。",strength:"温和、耐心，重视长期相处中的小事与默契。",care:"别把所有不满都留在心里，及时表达能减少误会。",partner:"细心、稳定、愿意耐心沟通且不忽视你感受的人。"},
+"100":{name:"浪漫自由型",icon:"🦋",tag:"热情表达 · 信任空间 · 冷静消化",desc:"你喜欢浪漫和主动表达，也重视信任与空间。冲突发生时，你通常希望先冷静再处理。",strength:"有热情、有独立性，能给关系带来活力，也尊重彼此差异。",care:"冷静不是回避，记得约定好重新沟通的时间。",partner:"有趣、坦诚、尊重自由，也愿意认真经营关系的人。"},
+"001":{name:"沉静守望型",icon:"🌌",tag:"细腻表达 · 信任空间 · 主动沟通",desc:"你表达感情较含蓄，重视信任和独立，同时愿意在重要问题上开启沟通。",strength:"细致、理性，尊重空间，也愿意为关系承担沟通责任。",care:"不要因为怕打扰而隐藏需求，适度表达会让对方更懂你。",partner:"尊重独立、沟通坦诚，也能读懂细节的人。"}
+};
+let idx=0,answers=[];
+function show(id){["home","quiz","result"].forEach(x=>document.getElementById(x).classList.toggle("hidden",x!==id))}
+function startQuiz(){idx=0;answers=[];show("quiz");render()}
+function goHome(){show("home")}
+function render(){
+let q=questions[idx];document.getElementById("part").textContent=idx<5?"第一部分 · 爱的表达":idx<10?"第二部分 · 安全感来源":"第三部分 · 矛盾处理";
+document.getElementById("count").textContent=(idx+1)+" / 15";document.getElementById("bar").style.width=((idx+1)/15*100)+"%";
+document.getElementById("question").textContent=(idx+1)+". "+q[0];
+["A","B"].forEach((v,i)=>{let b=document.getElementById(i?"optB":"optA");b.textContent=v+"  "+q[i+1];b.classList.toggle("selected",answers[idx]===v)});
+document.getElementById("next").disabled=!answers[idx];document.getElementById("next").textContent=idx===14?"查看我的结果":"下一题";
+}
+function choose(v){answers[idx]=v;render()}
+function nextQuestion(){if(!answers[idx])return;if(idx<14){idx++;render()}else calculate()}
+function calculate(){
+let dims=[];
+for(let start of [0,5,10]){
+let a=answers.slice(start,start+5).filter(x=>x==="A").length;
+let b=5-a;
+let code=a>b?"1":b>a?"0":(answers[start]==="A"?"1":"0");
+dims.push(code);
+}
+let key=dims.join("");let t=types[key];
+document.getElementById("rIcon").textContent=t.icon;document.getElementById("rName").textContent=t.name;
+document.getElementById("rTag").textContent=t.tag;document.getElementById("rDesc").textContent=t.desc;
+document.getElementById("rStrength").textContent=t.strength;document.getElementById("rCare").textContent=t.care;document.getElementById("rPartner").textContent=t.partner;
+show("result");window.scrollTo(0,0);
+}
+async function shareResult(){
+let name=document.getElementById("rName").textContent;
+let text="我在「恋爱人格实验室」测出的恋爱人格是："+name+"。你也来测测看！";
+if(navigator.share){try{await navigator.share({title:"恋爱人格实验室",text:text,url:location.href})}catch(e){}}
+else if(navigator.clipboard){try{await navigator.clipboard.writeText(text+" "+location.href);alert("结果文字和链接已复制，可以发给朋友了！")}catch(e){alert(text)}}
+else alert(text);
+}
+function restart(){startQuiz();window.scrollTo(0,0)}
+</script>
+</body></html>
