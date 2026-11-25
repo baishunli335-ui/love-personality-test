@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f8eaf1">
-<title>恋爱人格实验室</title>
+<title>恋爱人格测试</title>
 <style>
 :root{--pink:#c66f9a;--deep:#70445d;--bg:#fff8fb;--muted:#927b89;--line:#f0dce6}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#fff8fb,#f4efff);font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#473543;min-height:100vh}
@@ -35,7 +35,7 @@ h2{font-size:22px;color:#70445d;margin:8px 0 14px}.sub{text-align:center;color:v
  <div class="brand">LOVE PERSONALITY LAB</div>
  <section id="home" class="panel">
   <div class="hero">💗</div>
-  <h1>恋爱人格实验室</h1>
+  <h1>恋爱人格测试</h1>
   <p class="sub">15道小问题，探索你在亲密关系中的表达方式、<br>安全感来源与冲突处理习惯。</p>
   <div style="text-align:center;margin-top:18px"><span class="pill">免费测试 · 约3分钟</span></div>
   <button class="btn" onclick="startQuiz()">开始测试</button>
@@ -122,8 +122,8 @@ show("result");window.scrollTo(0,0);
 }
 async function shareResult(){
 let name=document.getElementById("rName").textContent;
-let text="我在「恋爱人格实验室」测出的恋爱人格是："+name+"。你也来测测看！";
-if(navigator.share){try{await navigator.share({title:"恋爱人格实验室",text:text,url:location.href})}catch(e){}}
+let text="我在「恋爱人格测试」测出的恋爱人格是："+name+"。你也来测测看！";
+if(navigator.share){try{await navigator.share({title:"恋爱人格测试",text:text,url:location.href})}catch(e){}}
 else if(navigator.clipboard){try{await navigator.clipboard.writeText(text+" "+location.href);alert("结果文字和链接已复制，可以发给朋友了！")}catch(e){alert(text)}}
 else alert(text);
 }
